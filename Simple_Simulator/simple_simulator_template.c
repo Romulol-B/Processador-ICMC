@@ -348,6 +348,11 @@ loop:
 					selM2 = sDATA_OUT;
 					LoadReg[rx] = 1;
 					IncPC = 1;
+					selM4 = Ry;
+					selM1 = sM4;
+					RW = 0;
+					selM2 = sDATA_OUT
+					
 					// -----------------------------
 					state=STATE_FETCH;
 					break;
@@ -365,6 +370,10 @@ loop:
 
 				case LOADINDEX:
 					// reg[rx] = MEMORY[reg[ry]];
+					selM1 = sPC;
+					RW = 0;
+					IncPC = 1;
+					LoadIR = 1;
 					
 					// -----------------------------
 					state=STATE_FETCH;
@@ -373,20 +382,29 @@ loop:
 				case STORE:
 					//MAR = MEMORY[PC];
 					//PC++;
-					
+					selM1 = sPC;
+					RW = 0;
+					IncPC = 1;
+					LoadIR = 1;
 					// -----------------------------
 					state=STATE_EXECUTE;
 					break;
 
 				case STOREINDEX:
 					//mem[reg[rx]] = reg[ry];
-					
+					selM1 = sPC;
+					RW = 0;
+					IncPC = 1;
+					LoadIR = 1;
 					// -----------------------------
 					state=STATE_FETCH;
 					break;
 
 				case MOV:
-					
+					selM1 = sPC;
+					RW = 0;
+					IncPC = 1;
+					LoadIR = 1;
 					// -----------------------------
 					state=STATE_FETCH;
 					break;
