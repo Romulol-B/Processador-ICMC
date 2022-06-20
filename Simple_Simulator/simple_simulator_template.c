@@ -357,15 +357,23 @@ loop:
 					// PC++;
 					selM1 = sPC;
 					RW = 0;
-					LoadMAR = 1; 
+					LoadIR = 1; 
 					IncPC = 1;
+					selM2 = sDATA_OUT;
+					LoadReg[rx] = 1;
 					// -----------------------------
 					state=STATE_EXECUTE;
 					break;
 
 				case LOADINDEX:
 					// reg[rx] = MEMORY[reg[ry]];
-					
+					selM1 = sPC;
+					RW =0;
+					IncPC= 1;
+					LoadIR = 1;
+					selM4 = reg[1];
+					selM2 = sDATA_OUT;
+					LoadReg[rx] = 1;
 					// -----------------------------
 					state=STATE_FETCH;
 					break;
@@ -373,20 +381,56 @@ loop:
 				case STORE:
 					//MAR = MEMORY[PC];
 					//PC++;
-					
+					selM1 = sPC;
+					RW =0;
+					IncPC= 1;
+					LoadIR = 1;
+					LoadMAR = 1;
+					selM1 = sMAR;
+					RW = 1;
+					selM3 = reg[0];
+					selM5 = sM3;
 					// -----------------------------
 					state=STATE_EXECUTE;
 					break;
 
 				case STOREINDEX:
 					//mem[reg[rx]] = reg[ry];
+					selM1 = sPC;
+					RW =0;
+					IncPC= 1;
+					LoadIR = 1;
+					selM3 = reg[1];
+					selM5 = sM3;
+					RW = 1;
+					selM4 = reg[0];
+					selM1 = sM4;
+					// -----------------------------
+					state=STATE_EXECUTE;
+					break;
 					
 					// -----------------------------
 					state=STATE_FETCH;
 					break;
 
 				case MOV:
-					
+					selM1 = sPC;
+					RW = 0;
+					IncPC = 1;
+					LoadIR = 1;
+					if(IR==0){
+						selM4 = reg[1];
+						selM2 = sM4;
+						LoadReg[rx] = 1;
+					}
+					else if(IR==1){
+					selM2 = sSP;
+					LoadReg[rx] = 1;
+					} 
+					else{
+					selM4 = reg[0];
+					LoadSP =1;
+					}
 					// -----------------------------
 					state=STATE_FETCH;
 					break;
