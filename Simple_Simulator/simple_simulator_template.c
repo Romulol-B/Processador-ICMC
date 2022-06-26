@@ -340,14 +340,14 @@ loop:
 					state=STATE_FETCH;
 					break;
 
-				case LOADIMED:
+								case LOADIMED:
 					// reg[rx] = mem[PC];
 					// PC++;
 					selM1 = sPC;
 					RW = 0;
+					IncPC = 1;
 					selM2 = sDATA_OUT;
 					LoadReg[rx] = 1;
-					IncPC = 1;
 					// -----------------------------
 					state=STATE_FETCH;
 					break;
@@ -357,15 +357,19 @@ loop:
 					// PC++;
 					selM1 = sPC;
 					RW = 0;
-					LoadMAR = 1; 
 					IncPC = 1;
+					LoadMAR = 1;
 					// -----------------------------
 					state=STATE_EXECUTE;
 					break;
 
 				case LOADINDEX:
 					// reg[rx] = MEMORY[reg[ry]];
-					
+					selM4 = ry;
+					selM1 = sM4;
+					RW = 0;
+					selM2 = sDATA_OUT;
+					LoadReg[rx] = 1;
 					// -----------------------------
 					state=STATE_FETCH;
 					break;
@@ -373,23 +377,51 @@ loop:
 				case STORE:
 					//MAR = MEMORY[PC];
 					//PC++;
-					
+				    selM1 = sPC;
+					RW = 0;
+					LoadMAR = 1; 
+					IncPC = 1;   
 					// -----------------------------
 					state=STATE_EXECUTE;
 					break;
 
 				case STOREINDEX:
 					//mem[reg[rx]] = reg[ry];
+					selM4 = rx;
+					selM1 = sM4;
+					RW = 1;
+					selM3 = ry;
+					selM5 = sM3;
+					// -----------------------------
+					state=STATE_EXECUTE;
+					break;
 					
+					// -----------------------------
+					state=STATE_FETCH;
+					break;
+				case MOV:
+					switch(pega_pedaco(IR,1,0))
+					{ case 0:
+						// reg[rx] = reg[ry];
+						selM4 = ry;
+						selM2 = sM4;
+						LoadReg[rx] = 1;
+						break;
+						case 1:
+						// reg[rx] = SP;
+						selM2 = sSP;
+						LoadReg[rx] = 1;
+						break;
+						default:
+						// SP = reg[rx];
+						selM4 = rx;
+						LoadSP = 1;
+						break;
+					}
 					// -----------------------------
 					state=STATE_FETCH;
 					break;
 
-				case MOV:
-					
-					// -----------------------------
-					state=STATE_FETCH;
-					break;
 
 				case ADD:
 				case SUB:
